@@ -1,23 +1,30 @@
 package com.example.aniverseapp;
 
+import com.example.aniverseapp.User;
+import com.example.aniverseapp.mapper.UserMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
     @Autowired
-    private UserRepository userRepository;
+    private UserMapper userMapper;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public User registerNewUser(User user) {
+    public User registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        userMapper.insertUser(user);
+        return user;
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+    public User authenticateUser(String username, String password) {
+        User user = userMapper.findByUsername(username);
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+            return user;
+        }
+        return null;
     }
 }

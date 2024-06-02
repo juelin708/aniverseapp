@@ -1,19 +1,11 @@
 package com.example.aniverseapp;
 
-import javax.persistence.*;
-
-@Entity
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
     private String username;
-
     private String password;
 
-    // Getters and Setters
+    // Getters and setters
     public Long getId() {
         return id;
     }
